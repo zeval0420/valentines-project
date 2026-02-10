@@ -1,0 +1,25 @@
+{
+  "name": "valentines-project",
+  "version": "1.0.0",
+  "description": "",
+  "main": "file_list.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zeval0420/valentines-project.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/zeval0420/valentines-project/issues"
+  },
+  "homepage": "https://github.com/zeval0420/valentines-project#readme",
+  "dependencies": {
+    "@capacitor/cli": "^8.0.2",
+    "@capacitor/core": "^8.0.2"
+  }
+}
