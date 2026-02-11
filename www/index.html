@@ -7,19 +7,13 @@
   <style>
     /* ===== CSS CUSTOM PROPERTIES ===== */
     :root {
-      --glass-bg: rgba(255, 255, 255, 0.08);
-      --glass-border: rgba(255, 255, 255, 0.18);
-      --glass-shadow: rgba(0, 0, 0, 0.12);
-      --glass-highlight: rgba(255, 255, 255, 0.3);
-      --accent-rose: rgba(255, 182, 193, 0.6);
-      --accent-lavender: rgba(230, 190, 255, 0.6);
-      --text-light: rgba(255, 255, 255, 0.95);
-      --text-dim: rgba(255, 255, 255, 0.7);
-      
-      /* Background layer controls */
-      --bg-blur: 40px;
-      --bg-opacity: 0.15;
-      --bg-brightness: 0.7;
+      --paper-bg: #fdfbf7;
+      --text-dark: #4a4a4a;
+      --text-light: #fdfbf7;
+      --border-color: #dcd1c1;
+      --shadow-color: rgba(0, 0, 0, 0.1);
+      --accent-color: #c8a2c8; /* A dusty lilac */
+      --accent-color-light: #e6d8e6;
     }
 
     /* ===== GLOBAL RESET ===== */
@@ -31,141 +25,14 @@
     }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-family: 'Courier New', monospace;
       overflow: hidden;
       width: 100vw;
       height: 100vh;
       position: relative;
-      /* Animated gradient background */
-      background: linear-gradient(135deg, 
-        #667eea 0%, 
-        #764ba2 25%, 
-        #f093fb 50%, 
-        #f5576c 75%, 
-        #667eea 100%
-      );
-      background-size: 400% 400%;
-      animation: gradientShift 20s ease infinite;
-    }
-
-    @keyframes gradientShift {
-      0%, 100% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-    }
-
-    /* ===== MEMORY HAZE BACKGROUND LAYER ===== */
-    .memory-haze {
-      position: fixed;
-      top: -10%;
-      left: -10%;
-      width: 120%;
-      height: 120%;
-      z-index: 1;
-      overflow: hidden;
-      pointer-events: none;
-      
-      /* Vignette effect */
-      mask-image: radial-gradient(
-        ellipse 100% 100% at 50% 50%,
-        black 0%,
-        black 40%,
-        transparent 100%
-      );
-      -webkit-mask-image: radial-gradient(
-        ellipse 100% 100% at 50% 50%,
-        black 0%,
-        black 40%,
-        transparent 100%
-      );
-      
-      opacity: var(--bg-opacity);
-      filter: brightness(var(--bg-brightness));
-      transition: opacity 1s ease, filter 1.2s ease;
-    }
-
-    .memory-haze.modal-active {
-      opacity: 0.08;
-      filter: brightness(0.5) blur(10px);
-    }
-
-    /* Photo mosaic container */
-    .photo-mosaic {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      will-change: transform;
-      
-      /* Subtle slow drift animation */
-      animation: hazeDrift 60s ease-in-out infinite;
-    }
-
-    @keyframes hazeDrift {
-      0%, 100% { 
-        transform: translate(0, 0) rotate(0deg);
-      }
-      25% { 
-        transform: translate(-2%, 1%) rotate(0.3deg);
-      }
-      50% { 
-        transform: translate(1%, -2%) rotate(-0.3deg);
-      }
-      75% { 
-        transform: translate(-1%, 1%) rotate(0.2deg);
-      }
-    }
-
-    /* Individual photo pieces */
-    .haze-photo {
-      position: absolute;
-      overflow: hidden;
-      border-radius: 8px;
-      
-      /* Heavy blur + grain effect */
-      filter: blur(var(--bg-blur)) contrast(1.1);
-      
-      /* Subtle border glow */
-      box-shadow: 
-        0 0 30px rgba(255, 255, 255, 0.1),
-        inset 0 0 20px rgba(255, 255, 255, 0.05);
-      
-      /* Random rotations applied via inline styles */
-      will-change: transform;
-    }
-
-    .haze-photo::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      
-      /* Film grain texture */
-      background-image: 
-        repeating-linear-gradient(
-          0deg,
-          transparent,
-          transparent 2px,
-          rgba(255, 255, 255, 0.03) 2px,
-          rgba(255, 255, 255, 0.03) 4px
-        ),
-        repeating-linear-gradient(
-          90deg,
-          transparent,
-          transparent 2px,
-          rgba(255, 255, 255, 0.03) 2px,
-          rgba(255, 255, 255, 0.03) 4px
-        );
-      
-      mix-blend-mode: overlay;
-      pointer-events: none;
-    }
-
-    .haze-photo img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      opacity: 0.9;
+      background-color: var(--paper-bg);
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.1'/%3E%3C/svg%3E");
+      color: var(--text-dark);
     }
 
     /* ===== INFINITE GALLERY CONTAINER ===== */
@@ -178,6 +45,8 @@
       overflow: hidden;
       cursor: grab;
       z-index: 10;
+      mask-image: linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%);
+      -webkit-mask-image: linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%);
     }
 
     .gallery-container:active {
@@ -195,119 +64,66 @@
       padding: 0 2rem;
     }
 
-    /* ===== GLASS IMAGE CARDS (Enhanced with background refraction) ===== */
+    /* ===== SCRAPBOOK IMAGE CARDS ===== */
     .gallery-item {
       flex-shrink: 0;
       width: 280px;
       height: 380px;
-      border-radius: 24px;
+      border-radius: 8px;
       overflow: hidden;
       position: relative;
-      
-      /* Enhanced glass effect - refracts background */
-      backdrop-filter: blur(16px) saturate(180%);
-      background: linear-gradient(
-        135deg,
-        rgba(255, 255, 255, 0.1),
-        rgba(255, 255, 255, 0.05)
-      );
-      border: 1px solid var(--glass-border);
-      box-shadow: 
-        0 8px 32px var(--glass-shadow),
-        inset 0 1px 0 var(--glass-highlight),
-        inset 0 -1px 0 rgba(255, 255, 255, 0.1);
-      
+      background: #fff;
+      border: 10px solid #fff;
+      border-bottom-width: 20px;
+      box-shadow: 0 5px 15px var(--shadow-color);
       transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      transform: rotate(-2deg);
     }
 
-    .gallery-item::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(
-        135deg,
-        rgba(255, 255, 255, 0.2) 0%,
-        transparent 50%,
-        rgba(255, 255, 255, 0.1) 100%
-      );
-      opacity: 0.5;
-      mix-blend-mode: overlay;
-      pointer-events: none;
-      z-index: 1;
+    .gallery-item:nth-child(even) {
+      transform: rotate(2deg);
     }
 
     .gallery-item:hover {
-      transform: scale(1.05) translateY(-8px);
+      transform: scale(1.05) translateY(-8px) rotate(0deg);
+      z-index: 11;
     }
 
     .gallery-item img {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      opacity: 0.9;
-      transition: opacity 0.3s ease;
+      filter: sepia(0.2) contrast(0.95) brightness(1.05);
     }
 
-    .gallery-item:hover img {
-      opacity: 1;
-    }
-
-    /* ===== CENTRAL GLASS BUTTON ===== */
+    /* ===== CENTRAL BUTTON ===== */
     .memory-button {
       position: fixed;
       bottom: 60px;
       left: 50%;
       transform: translateX(-50%);
       z-index: 100;
-      
-      padding: 18px 42px;
-      border-radius: 50px;
-      border: 1px solid var(--glass-border);
-      
-      /* Glass effect */
-      backdrop-filter: blur(16px) saturate(200%);
-      background: linear-gradient(135deg, 
-        var(--accent-rose), 
-        var(--accent-lavender)
-      );
-      box-shadow: 
-        0 12px 40px rgba(255, 105, 180, 0.3),
-        inset 0 1px 0 var(--glass-highlight);
-      
+      padding: 12px 30px;
+      border-radius: 4px;
+      border: 1px solid var(--text-dark);
+      background: transparent;
       font-size: 18px;
-      font-weight: 500;
-      color: var(--text-light);
-      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-      letter-spacing: 0.5px;
-      
+      font-weight: normal;
+      color: var(--text-dark);
+      letter-spacing: 1px;
       cursor: pointer;
       user-select: none;
-      
-      /* Breathing animation */
-      animation: breathe 4s ease-in-out infinite;
-      
       transition: all 0.3s ease;
     }
 
-    @keyframes breathe {
-      0%, 100% { 
-        transform: translateX(-50%) scale(1);
-        opacity: 0.95;
-      }
-      50% { 
-        transform: translateX(-50%) scale(1.05);
-        opacity: 1;
-      }
+    .memory-button:hover {
+      background: rgba(74, 74, 74, 0.05);
+      letter-spacing: 2px;
     }
 
     .memory-button:active {
       transform: translateX(-50%) scale(0.95);
-      box-shadow: 
-        0 6px 20px rgba(255, 105, 180, 0.4),
-        inset 0 1px 0 var(--glass-highlight);
+      background: rgba(74, 74, 74, 0.1);
     }
 
     /* ===== MODAL OVERLAY ===== */
@@ -318,10 +134,7 @@
       width: 100%;
       height: 100%;
       z-index: 200;
-      
-      backdrop-filter: blur(20px) brightness(0.6);
-      background: rgba(0, 0, 0, 0.5);
-      
+      background: rgba(40, 40, 40, 0.85);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -414,22 +227,22 @@
       width: 44px;
       height: 44px;
       border-radius: 50%;
-      background: var(--glass-bg);
-      border: 1px solid var(--glass-border);
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
       font-size: 22px;
       font-weight: bold;
-      color: var(--text-light);
+      color: var(--text-light); /* White text on dark overlay */
       z-index: 210;
       transition: all 0.3s ease;
       user-select: none;
     }
 
     .carousel-arrow:hover {
-      background: rgba(255, 255, 255, 0.15);
+      background: rgba(255, 255, 255, 0.2);
       transform: translateY(-50%) scale(1.1);
     }
 
@@ -449,24 +262,19 @@
       width: 44px;
       height: 44px;
       border-radius: 50%;
-      
-      backdrop-filter: blur(12px);
-      background: var(--glass-bg);
-      border: 1px solid var(--glass-border);
-      
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
       display: flex;
       align-items: center;
       justify-content: center;
-      
       cursor: pointer;
       font-size: 24px;
-      color: var(--text-light);
-      
+      color: var(--text-light); /* White text on dark overlay */
       transition: all 0.3s ease;
     }
 
     .close-button:hover {
-      background: rgba(255, 255, 255, 0.15);
+      background: rgba(255, 255, 255, 0.2);
       transform: rotate(90deg);
     }
 
@@ -504,34 +312,31 @@
       width: 50px;
       height: 50px;
       border-radius: 50%;
-      
-      backdrop-filter: blur(12px);
-      background: var(--glass-bg);
-      border: 1px solid var(--glass-border);
-      
+      background: transparent;
+      border: 1px solid var(--text-dark);
       display: flex;
       align-items: center;
       justify-content: center;
-      
       cursor: pointer;
       font-size: 20px;
-      color: var(--text-light);
-      
+      color: var(--text-dark);
       transition: all 0.3s ease;
     }
 
     .music-toggle:hover {
-      background: rgba(255, 255, 255, 0.15);
+      background: rgba(74, 74, 74, 0.05);
       transform: scale(1.1);
     }
 
     .music-toggle.playing {
       animation: pulse 2s ease infinite;
+      border-color: var(--accent-color);
+      color: var(--accent-color);
     }
 
     @keyframes pulse {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(255, 105, 180, 0.7); }
-      50% { box-shadow: 0 0 0 15px rgba(255, 105, 180, 0); }
+      0%, 100% { box-shadow: 0 0 0 0 rgba(200, 162, 200, 0.7); }
+      50% { box-shadow: 0 0 0 15px rgba(200, 162, 200, 0); }
     }
 
     /* ===== LOADING FADE IN ===== */
@@ -547,22 +352,26 @@
     /* ===== MOBILE OPTIMIZATIONS ===== */
     @media (max-width: 768px) {
       .gallery-item {
-        width: 240px;
-        height: 320px;
+        width: 75vw;
+        height: 95vw;
       }
       
       .memory-button {
-        bottom: 40px;
+        bottom: 15vh;
         padding: 16px 36px;
         font-size: 16px;
       }
       
       .polaroid-carousel {
-        height: 480px;
+        height: 530px;
       }
       
       .polaroid-image {
-        height: 320px;
+        height: 400px;
+      }
+
+      .polaroid-caption {
+        font-size: 14px;
       }
 
       .carousel-arrow {
@@ -580,28 +389,184 @@
 
     /* Reduce motion for accessibility */
     @media (prefers-reduced-motion: reduce) {
-      .photo-mosaic {
-        animation: none;
-      }
-      
-      .memory-button {
-        animation: none;
-      }
       
       .polaroid {
         transition-duration: 0.2s;
       }
     }
+
+    /* ===== BACKGROUND SHAPES ===== */
+    .bg-shape-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+      overflow: hidden;
+    }
+
+    .bg-shape-wrapper {
+      position: absolute;
+      bottom: -10vh;
+      will-change: transform;
+      pointer-events: none;
+    }
+
+    .bg-shape {
+      position: relative;
+      animation: floatUpBackground linear infinite;
+      will-change: transform;
+    }
+
+    @keyframes floatUpBackground {
+      from { transform: translateY(0) rotate(0deg); }
+      to { transform: translateY(-120vh) rotate(calc(360deg * var(--rotation-dir))); }
+    }
+
+    /* ===== GRAIN OVERLAY ===== */
+    body::after {
+      content: '';
+      position: fixed;
+      top: -50%; left: -50%;
+      width: 200%; height: 200%;
+      pointer-events: none;
+      z-index: 9000;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 600 600' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+      animation: grain 8s steps(10, end) infinite;
+    }
+
+    @keyframes grain {
+      0%, 100% { transform: translate(0, 0); }
+      10% { transform: translate(-5%, -10%); }
+      20% { transform: translate(-15%, 5%); }
+      30% { transform: translate(7%, -25%); }
+      40% { transform: translate(-5%, 25%); }
+      50% { transform: translate(-15%, 10%); }
+      60% { transform: translate(15%, 0%); }
+      70% { transform: translate(0%, 15%); }
+      80% { transform: translate(3%, 35%); }
+      90% { transform: translate(-10%, 10%); }
+    }
+  </style>
+
+  <style>
+    /* Floating Notes */
+    #notes-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 5;
+      overflow: hidden;
+    }
+
+    .note {
+      position: absolute;
+      bottom: -150px; /* Start off-screen */
+      left: 50%;
+      padding: 15px 20px;
+      background: #fffff0; /* Ivory, like a sticky note */
+      border-radius: 5px;
+      box-shadow: 0 4px 10px var(--shadow-color);
+      font-family: 'Courier New', monospace;
+      font-size: 16px;
+      color: var(--text-dark);
+      pointer-events: all;
+      contenteditable: true;
+      animation: floatUpNote linear;
+      border: 1px solid #eaddc5;
+      min-width: 150px;
+      min-height: 50px;
+    }
+
+    .note:focus {
+      outline: 2px solid var(--accent-color);
+      box-shadow: 0 6px 20px var(--shadow-color);
+    }
+
+    @keyframes floatUpNote {
+      to {
+        transform: translateY(-110vh) rotate(0deg);
+        opacity: 0;
+      }
+    }
+
+    /* ===== INTRO OVERLAY ===== */
+    #intro-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 9999;
+      background-color: #fdfbf7;
+      /* Subtle paper texture using noise */
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.1'/%3E%3C/svg%3E");
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 1.5s ease-in-out;
+    }
+
+    .intro-text {
+      font-family: 'Courier New', monospace;
+      font-size: 1.5rem;
+      color: #4a4a4a;
+      text-align: center;
+      padding: 20px;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 1.5s ease, transform 1.5s ease;
+      max-width: 80%;
+      line-height: 1.6;
+    }
+
+    .intro-text.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #start-button {
+      margin-top: 40px;
+      padding: 12px 30px;
+      font-family: 'Courier New', monospace;
+      font-size: 1.2rem;
+      background: transparent;
+      border: 1px solid #4a4a4a;
+      color: #4a4a4a;
+      border-radius: 4px;
+      cursor: pointer;
+      opacity: 0;
+      transition: all 0.8s ease;
+      pointer-events: none;
+    }
+
+    #start-button.visible {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    #start-button:hover {
+      background: rgba(74, 74, 74, 0.1);
+      letter-spacing: 2px;
+    }
   </style>
 </head>
 <body>
 
-  <!-- ===== MEMORY HAZE BACKGROUND ===== -->
-  <div class="memory-haze" id="memoryHaze">
-    <div class="photo-mosaic" id="photoMosaic">
-      <!-- Background photos are now generated by JavaScript -->
-    </div>
+  <!-- ===== INTRO OVERLAY ===== -->
+  <div id="intro-overlay">
+    <div id="intro-text-container" class="intro-text"></div>
+    <button id="start-button">Start</button>
   </div>
+
+  <!-- ===== FLOATING NOTES ===== -->
+  <div id="notes-container"></div>
 
   <!-- ===== INFINITE GALLERY ===== -->
   <div class="gallery-container" id="galleryContainer">
@@ -642,6 +607,91 @@
   <!-- This script is automatically generated by the .bat file -->
   <script src="file_list.js"></script>
 
+
+  <script>
+    // ========================================
+    // FLOATING LOVE NOTES
+    // ========================================
+    const loveMessages = [
+      "You're the moon that glows in the sky",
+      "And I miss you on a train, I miss you in the morning",
+      "No, I have never felt a love like this before",
+      "YAnd I'll kiss you good morning \nFor every morning you stay",
+      "But now my heart's singing and tonight I'll be fine",
+      "Your colors caught my eye\nAnd you're my favorite sight to see",
+      "But still I wanna be with you every single day 'til the day that we die",
+      "Well, you are the only exception",
+      "I'd love to figure love out with you",
+      "And when you see that we were meant to be all along",
+      "Don't you ever think I'm bothered by you",
+      "Just like me, they long to be close to you",
+      "My love will always stay by you",
+      "Never thought I'd find you, but you're here, and so I love you",
+      "You'll be her in my heart always",
+      "You hold me like I'm the one who's precious \nI hate to break it to you, but it's just the other way around"
+    ];
+
+    function addNote() {
+      const container = document.getElementById('notes-container');
+      const note = document.createElement('div');
+      note.className = 'note';
+      
+      // Pick a random message or use a default
+      if (loveMessages.length > 0) {
+        note.textContent = loveMessages[Math.floor(Math.random() * loveMessages.length)];
+      } else {
+        note.textContent = 'I love you...'; // Default text
+      }
+
+      // Randomize starting position and angle
+      const startX = Math.random() * 80 + 10; // % from left (10% to 90%)
+      const startAngle = (Math.random() - 0.5) * 40; // -20deg to +20deg
+      const endAngle = startAngle + (Math.random() - 0.5) * 60; // Add some rotation
+      const flightTime = Math.random() * 15 + 15; // 15 to 30 seconds
+
+      note.style.left = `${startX}%`;
+      note.style.animationDuration = `${flightTime}s`;
+      
+      // We set the initial transform and the 'to' state of the animation here
+      note.style.transform = `translateX(-50%) rotate(${startAngle}deg)`;
+      
+      // A bit of a hack to define the end state of the animation dynamically
+      const styleSheet = document.styleSheets[0];
+      const keyframesName = `floatUpNote_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
+      const keyframes = `
+        @keyframes ${keyframesName} {
+          to {
+            transform: translateX(-50%) translateY(-110vh) rotate(${endAngle}deg);
+            opacity: 0;
+          }
+        }
+      `;
+      styleSheet.insertRule(keyframes, styleSheet.cssRules.length);
+      note.style.animationName = keyframesName;
+
+
+      container.appendChild(note);
+
+      // Clean up the dynamically added keyframes rule after the animation ends
+      note.addEventListener('animationend', () => {
+        note.remove();
+        // Find and remove the rule
+        for (let i = 0; i < styleSheet.cssRules.length; i++) {
+          if (styleSheet.cssRules[i].name === keyframesName) {
+            styleSheet.deleteRule(i);
+            break;
+          }
+        }
+      });
+    }
+
+    // Example: Add a new note every 7 seconds
+    function startFloatingNotes() {
+      setInterval(addNote, 5500);
+      addNote();
+    }
+  </script>
+
   <script>
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("service-worker.js");
@@ -660,13 +710,19 @@
     let isDragging = false;
     let startX = 0;
     let currentX = 0;
-    let backgroundParallaxOffset = 0;
+    let musicPlaying = false;
+    // New variables for inertia
+    let galleryVelocity = 0;
+    const FRICTION = 0.95; // How quickly momentum fades
+    const MIN_VELOCITY = 0.1; // Below this, momentum stops
+    const DRAG_MULTIPLIER = 2; // How sensitive the drag is
 
     // ========================================
     // DOM ELEMENTS
     // ========================================
     
     const galleryTrack = document.getElementById('galleryTrack');
+    const galleryContainer = document.getElementById('galleryContainer');
     const memoryButton = document.getElementById('memoryButton');
     const modalOverlay = document.getElementById('modalOverlay');
     const closeButton = document.getElementById('closeButton');
@@ -674,36 +730,8 @@
     const carouselDots = document.getElementById('carouselDots');
     const musicToggle = document.getElementById('musicToggle');
     const bgMusic = document.getElementById('bgMusic');
-    const memoryHaze = document.getElementById('memoryHaze');
-    const photoMosaic = document.getElementById('photoMosaic');
     const prevArrow = document.getElementById('prevArrow');
     const nextArrow = document.getElementById('nextArrow');
-
-    // ========================================
-    // MEMORY HAZE SETUP
-    // ========================================
-    function initMemoryHaze() {
-        memoryHazeImages.forEach((imgSrc, index) => {
-            const photo = document.createElement('div');
-            photo.className = 'haze-photo';
-            photo.innerHTML = `<img src="assets/memory_haze/${imgSrc}" alt="Memory Haze ${index + 1}">`;
-
-            // Random positioning and rotation to create a scattered look
-            const top = Math.random() * 80 + 10; // 10% to 90%
-            const left = Math.random() * 80 + 10; // 10% to 90%
-            const rotation = (Math.random() - 0.5) * 30; // -15deg to 15deg
-            const size = Math.random() * 100 + 150; // 150px to 250px
-
-            photo.style.top = `${top}%`;
-            photo.style.left = `${left}%`;
-            photo.style.transform = `translate(-50%, -50%) rotate(${rotation}deg)`;
-            photo.style.width = `${size}px`;
-            photo.style.height = `${size * (Math.random() * 0.4 + 0.8)}px`; // slightly varying aspect ratio
-
-            photoMosaic.appendChild(photo);
-        });
-    }
-
 
     // ========================================
     // INFINITE GALLERY SETUP
@@ -727,36 +755,36 @@
     }
 
     // ========================================
-    // GALLERY ANIMATION LOOP WITH PARALLAX
+    // GALLERY ANIMATION LOOP
     // ========================================
     
     function animateGallery() {
       if (!isDragging) {
-        galleryOffset -= galleryScrollSpeed;
-        
-        const trackWidth = galleryTrack.scrollWidth / (galleryImages.length > 0 ? 3 : 1);
-        
-        if (trackWidth > 0 && Math.abs(galleryOffset) >= trackWidth) {
-          galleryOffset = 0;
+        // If there's momentum from a drag
+        if (Math.abs(galleryVelocity) > MIN_VELOCITY) {
+          galleryOffset += galleryVelocity;
+          galleryVelocity *= FRICTION; // Apply friction
+        } else {
+          // Otherwise, do the auto-scroll
+          galleryVelocity = 0;
+          galleryOffset -= galleryScrollSpeed;
         }
-        
-        galleryTrack.style.transform = `translateY(-50%) translateX(${galleryOffset}px)`;
-        
-        backgroundParallaxOffset = galleryOffset * 0.15;
-        updateBackgroundParallax();
       }
       
+      // Infinite loop logic - apply regardless of dragging state to handle wrapping
+      const trackWidth = galleryTrack.scrollWidth / 3;
+      if (trackWidth > 0) {
+        // Use while loops to handle large offsets from fast drags in a single frame
+        while (galleryOffset <= -trackWidth) {
+          galleryOffset += trackWidth;
+        }
+        while (galleryOffset > 0) {
+          galleryOffset -= trackWidth;
+        }
+      }
+      
+      galleryTrack.style.transform = `translateY(-50%) translateX(${galleryOffset}px)`;
       requestAnimationFrame(animateGallery);
-    }
-
-    // ========================================
-    // BACKGROUND PARALLAX EFFECT
-    // ========================================
-    
-    function updateBackgroundParallax() {
-      const blurVariation = 40 + (Math.sin(backgroundParallaxOffset * 0.01) * 5);
-      photoMosaic.style.transform = `translate(${backgroundParallaxOffset}px, 0)`;
-      photoMosaic.style.filter = `blur(${blurVariation}px)`;
     }
 
     // ========================================
@@ -765,37 +793,40 @@
     
     function handleDragStart(e) {
       isDragging = true;
+      galleryVelocity = 0; // Stop any existing motion
       startX = e.type.includes('mouse') ? e.pageX : e.touches[0].pageX;
       currentX = startX;
-      galleryTrack.style.cursor = 'grabbing';
+      galleryContainer.style.cursor = 'grabbing';
       triggerFirstInteraction();
     }
 
     function handleDragMove(e) {
       if (!isDragging) return;
       
+      e.preventDefault();
       const x = e.type.includes('mouse') ? e.pageX : e.touches[0].pageX;
       const diff = x - currentX;
-      currentX = x;
-      galleryOffset += diff * 2;
       
-      galleryTrack.style.transform = `translateY(-50%) translateX(${galleryOffset}px)`;
-      backgroundParallaxOffset = galleryOffset * 0.15;
-      updateBackgroundParallax();
+      galleryOffset += diff * DRAG_MULTIPLIER;
+      // Set velocity for inertia calculation on release
+      galleryVelocity = diff * DRAG_MULTIPLIER;
+      
+      currentX = x;
     }
 
     function handleDragEnd() {
       isDragging = false;
-      galleryTrack.style.cursor = 'grab';
+      galleryContainer.style.cursor = 'grab';
+      // The animateGallery loop will now use the last calculated galleryVelocity for inertia
     }
 
-    galleryTrack.addEventListener('mousedown', handleDragStart);
-    galleryTrack.addEventListener('mousemove', handleDragMove);
-    galleryTrack.addEventListener('mouseup', handleDragEnd);
-    galleryTrack.addEventListener('mouseleave', handleDragEnd);
-    galleryTrack.addEventListener('touchstart', handleDragStart);
-    galleryTrack.addEventListener('touchmove', handleDragMove);
-    galleryTrack.addEventListener('touchend', handleDragEnd);
+    galleryContainer.addEventListener('mousedown', handleDragStart);
+    galleryContainer.addEventListener('mousemove', handleDragMove);
+    galleryContainer.addEventListener('mouseup', handleDragEnd);
+    galleryContainer.addEventListener('mouseleave', handleDragEnd);
+    galleryContainer.addEventListener('touchstart', handleDragStart);
+    galleryContainer.addEventListener('touchmove', handleDragMove);
+    galleryContainer.addEventListener('touchend', handleDragEnd);
 
     // ========================================
     // POLAROID CAROUSEL SETUP
@@ -817,7 +848,7 @@
         polaroid.className = `polaroid ${index === 0 ? 'active' : 'next'}`;
         polaroid.innerHTML = `
           <div class="polaroid-image">
-            <img src="assets/polaroids/${imgSrc}" alt="Polaroid Memory ${index + 1}">
+            <img data-src="assets/polaroids/${imgSrc}" alt="Polaroid Memory ${index + 1}">
           </div>
           <div class="polaroid-caption">${imgSrc.split('.').slice(0, -1).join('.')}</div>
         `;
@@ -855,6 +886,17 @@
                 polaroid.classList.add('prev');
             } else {
                 polaroid.classList.add('next');
+            }
+
+            // Lazy load the image for the active, next, and previous slides
+            const isActive = i === index;
+            const isPrev = i === (index - 1 + total) % total;
+            const isNext = i === (index + 1) % total;
+            if (isActive || isPrev || isNext) {
+                const img = polaroid.querySelector('img');
+                if (img && img.dataset.src && !img.src) {
+                    img.src = img.dataset.src;
+                }
             }
         });
 
@@ -922,9 +964,20 @@
     
     memoryButton.addEventListener('click', () => {
       modalOverlay.classList.add('active');
-      memoryHaze.classList.add('modal-active');
       triggerFirstInteraction();
-      fadeInMusic(0.5, 1500);
+
+      // If music isn't playing, start it.
+      if (bgMusic.paused) {
+        musicPlaying = true; // Set user's intent to play
+        bgMusic.play().then(() => {
+          musicToggle.textContent = '🎵';
+          musicToggle.classList.add('playing');
+          fadeInMusic(0.5, 1500);
+        }).catch(error => console.error("Music play failed:", error));
+      } else {
+        // If already playing, just ensure the volume is right for the modal.
+        fadeInMusic(0.5, 1500);
+      }
     });
 
     closeButton.addEventListener('click', closeModal);
@@ -935,7 +988,6 @@
 
     function closeModal() {
       modalOverlay.classList.remove('active');
-      memoryHaze.classList.remove('modal-active');
       fadeInMusic(0.3, 2000);
     }
 
@@ -946,7 +998,9 @@
     function triggerFirstInteraction() {
       if (!hasInteracted) {
         hasInteracted = true;
-        if (musicPlaying) fadeInMusic(0.3, 2000);
+        if (musicPlaying) {
+          fadeInMusic(0.3, 2000);
+        }
       }
     }
 
@@ -976,9 +1030,11 @@
     musicToggle.addEventListener('click', () => {
       if (!bgMusic.paused) {
         bgMusic.pause();
+        musicPlaying = false;
         musicToggle.textContent = '🔇';
         musicToggle.classList.remove('playing');
       } else {
+        musicPlaying = true;
         bgMusic.play().then(() => {
             musicToggle.textContent = '🎵';
             musicToggle.classList.add('playing');
@@ -995,14 +1051,151 @@
     // ========================================
     // INITIALIZATION
     // ========================================
+    
+    let mouseX = 0;
+    let mouseY = 0;
+    let targetMouseX = 0;
+    let targetMouseY = 0;
+
+    document.addEventListener('mousemove', (e) => {
+      targetMouseX = (e.clientX / window.innerWidth) - 0.5;
+      targetMouseY = (e.clientY / window.innerHeight) - 0.5;
+    });
+
+    function animateParallax() {
+      mouseX += (targetMouseX - mouseX) * 0.05;
+      mouseY += (targetMouseY - mouseY) * 0.05;
+
+      const wrappers = document.querySelectorAll('.bg-shape-wrapper');
+      wrappers.forEach(wrapper => {
+        const depth = parseFloat(wrapper.getAttribute('data-depth'));
+        const moveX = mouseX * depth;
+        const moveY = mouseY * depth;
+        wrapper.style.transform = `translate(${moveX}px, ${moveY}px)`;
+      });
+      requestAnimationFrame(animateParallax);
+    }
+
+    function initBackgroundShapes() {
+      const container = document.createElement('div');
+      container.className = 'bg-shape-container';
+      // Insert before gallery container
+      const gallery = document.getElementById('galleryContainer');
+      document.body.insertBefore(container, gallery);
+
+      const shapes = ['♥', '♡', '★', '☆', '•', '∘'];
+      const numShapes = 25;
+
+      for (let i = 0; i < numShapes; i++) {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'bg-shape-wrapper';
+        
+        // Random horizontal position
+        wrapper.style.left = `${Math.random() * 100}vw`;
+        
+        // Random depth for parallax
+        const depth = (Math.random() - 0.5) * 100;
+        wrapper.setAttribute('data-depth', depth);
+
+        const shape = document.createElement('div');
+        shape.className = 'bg-shape';
+        shape.textContent = shapes[Math.floor(Math.random() * shapes.length)];
+        
+        // Random size
+        const size = Math.random() * 1.5 + 0.5; // 0.5rem to 2rem
+        shape.style.fontSize = `${size}rem`;
+        
+        // Random animation duration and delay
+        const duration = Math.random() * 20 + 20; // 20-40s
+        const delay = Math.random() * -40; // Start mid-animation
+        
+        shape.style.animationDuration = `${duration}s`;
+        shape.style.animationDelay = `${delay}s`;
+        
+        // Random opacity/color
+        const opacity = Math.random() * 0.15 + 0.05; 
+        shape.style.color = `rgba(74, 74, 74, ${opacity})`;
+        
+        // Random rotation direction
+        const rotationDir = Math.random() > 0.5 ? 1 : -1;
+        shape.style.setProperty('--rotation-dir', rotationDir);
+
+        wrapper.appendChild(shape);
+        container.appendChild(wrapper);
+      }
+      
+      requestAnimationFrame(animateParallax);
+    }
+
     function initializeApp() {
-        initMemoryHaze();
+        initBackgroundShapes();
         initGallery();
         initPolaroids();
+        startFloatingNotes();
         requestAnimationFrame(animateGallery);
     }
     
-    initializeApp();
+    // ========================================
+    // INTRO SEQUENCE
+    // ========================================
+    const introOverlay = document.getElementById('intro-overlay');
+    const introTextContainer = document.getElementById('intro-text-container');
+    const startButton = document.getElementById('start-button');
+    
+    const introSentences = [
+      "Crazy to think we've already been together for three years, huh",
+      "I don't know where I would be right now if you hadn't confessed",
+      "But I'm quite happy that we turned out this way :)"
+    ];
+
+    async function playIntro() {
+      // Small delay before starting
+      await new Promise(r => setTimeout(r, 1000));
+
+      for (const sentence of introSentences) {
+        introTextContainer.textContent = "";
+        
+        // Disable transition for instant appearance of container for typing effect
+        introTextContainer.style.transition = 'none';
+        introTextContainer.classList.add('visible');
+        
+        // Type out character by character
+        for (const char of sentence) {
+          introTextContainer.textContent += char;
+          await new Promise(r => setTimeout(r, 50)); 
+        }
+        
+        await new Promise(r => setTimeout(r, 2000)); // Display time
+        
+        // Re-enable transition for fade out
+        introTextContainer.style.transition = '';
+        introTextContainer.classList.remove('visible');
+        await new Promise(r => setTimeout(r, 1500)); // Fade out/wait time
+      }
+      
+      // Show button
+      startButton.classList.add('visible');
+    }
+
+    startButton.addEventListener('click', () => {
+      introOverlay.style.opacity = '0';
+      setTimeout(() => {
+        introOverlay.style.display = 'none';
+        initializeApp(); // Start the main app
+        
+        // Start music
+        musicPlaying = true;
+        bgMusic.play().then(() => {
+            musicToggle.textContent = '🎵';
+            musicToggle.classList.add('playing');
+            fadeInMusic(0.3, 2000);
+        }).catch(e => console.log("Audio autoplay prevented", e));
+        
+      }, 1500);
+    });
+
+    // Start intro on load
+    window.addEventListener('load', playIntro);
 
   </script>
 
