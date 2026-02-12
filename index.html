@@ -694,7 +694,7 @@
 
   <script>
     if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("service-worker.js");
+      navigator.serviceWorker.register("service-worker.js").catch(e => console.log("Service Worker failed:", e));
     }
   </script>
   
@@ -702,6 +702,10 @@
     // ========================================
     // STATE MANAGEMENT
     // ========================================
+    
+    // Ensure variables exist if file_list.js is missing (e.g. in APK)
+    if (typeof galleryImages === 'undefined') window.galleryImages = [];
+    if (typeof polaroidImages === 'undefined') window.polaroidImages = [];
     
     let currentPolaroidIndex = 0;
     let hasInteracted = false;
