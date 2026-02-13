@@ -47,6 +47,7 @@
       z-index: 10;
       mask-image: linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%);
       -webkit-mask-image: linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%);
+      touch-action: none;
     }
 
     .gallery-container:active {
@@ -94,6 +95,9 @@
       height: 100%;
       object-fit: cover;
       filter: sepia(0.2) contrast(0.95) brightness(1.05);
+      pointer-events: none;
+      -webkit-user-drag: none;
+      user-select: none;
     }
 
     /* ===== CENTRAL BUTTON ===== */
@@ -102,11 +106,13 @@
       bottom: 60px;
       left: 50%;
       transform: translateX(-50%);
-      z-index: 100;
+      z-index: 150;
       padding: 12px 30px;
       border-radius: 4px;
       border: 1px solid var(--text-dark);
-      background: transparent;
+      background: rgba(253, 251, 247, 0.8);
+      backdrop-filter: blur(2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
       font-size: 18px;
       font-weight: normal;
       color: var(--text-dark);
@@ -114,6 +120,12 @@
       cursor: pointer;
       user-select: none;
       transition: all 0.3s ease;
+      animation: floatButton 3s ease-in-out infinite;
+    }
+
+    @keyframes floatButton {
+      0%, 100% { margin-bottom: 0; }
+      50% { margin-bottom: 10px; }
     }
 
     .memory-button:hover {
@@ -421,8 +433,8 @@
     }
 
     @keyframes floatUpBackground {
-      from { transform: translateY(0) rotate(0deg); }
-      to { transform: translateY(-120vh) rotate(calc(360deg * var(--rotation-dir))); }
+      from { transform: translateY(0) rotate(0deg) scale(var(--beat-scale, 1)); }
+      to { transform: translateY(-120vh) rotate(calc(360deg * var(--rotation-dir))) scale(var(--beat-scale, 1)); }
     }
 
     /* ===== GRAIN OVERLAY ===== */
@@ -799,6 +811,7 @@
     // ========================================
     
     function handleDragStart(e) {
+      if (e.type === 'mousedown') e.preventDefault();
       isDragging = true;
       galleryVelocity = 0; // Stop any existing motion
       startX = e.type.includes('mouse') ? e.pageX : e.touches[0].pageX;
@@ -976,6 +989,8 @@
       // If music isn't playing, start it.
       if (bgMusic.paused) {
         musicPlaying = true; // Set user's intent to play
+        if (!audioContext) setupAudioAnalyzer();
+        if (audioContext && audioContext.state === 'suspended') audioContext.resume();
         bgMusic.play().then(() => {
           musicToggle.textContent = '🎵';
           musicToggle.classList.add('playing');
@@ -1001,6 +1016,53 @@
     // ========================================
     // MUSIC SYSTEM
     // ========================================
+    
+    let audioContext;
+    let analyser;
+    let dataArray;
+    let source;
+
+    function setupAudioAnalyzer() {
+      if (audioContext) return;
+      
+      try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        audioContext = new AudioContext();
+        analyser = audioContext.createAnalyser();
+        
+        source = audioContext.createMediaElementSource(bgMusic);
+        source.connect(analyser);
+        analyser.connect(audioContext.destination);
+        
+        analyser.fftSize = 256;
+        const bufferLength = analyser.frequencyBinCount;
+        dataArray = new Uint8Array(bufferLength);
+        
+        animateBeat();
+      } catch (e) {
+        console.error("Audio Context failed:", e);
+      }
+    }
+
+    function animateBeat() {
+      requestAnimationFrame(animateBeat);
+      if (!analyser) return;
+      
+      analyser.getByteFrequencyData(dataArray);
+      
+      // Average of lower frequencies (bass)
+      let sum = 0;
+      const bassBinCount = 8; 
+      for (let i = 0; i < bassBinCount; i++) {
+        sum += dataArray[i];
+      }
+      const average = sum / bassBinCount;
+      
+      // Map average (0-255) to scale (1.0 - 1.5)
+      const scale = 1 + (average / 255) * 0.5;
+      
+      document.body.style.setProperty('--beat-scale', scale);
+    }
     
     function triggerFirstInteraction() {
       if (!hasInteracted) {
@@ -1042,6 +1104,8 @@
         musicToggle.classList.remove('playing');
       } else {
         musicPlaying = true;
+        if (!audioContext) setupAudioAnalyzer();
+        if (audioContext && audioContext.state === 'suspended') audioContext.resume();
         bgMusic.play().then(() => {
             musicToggle.textContent = '🎵';
             musicToggle.classList.add('playing');
@@ -1192,6 +1256,8 @@
         
         // Start music
         musicPlaying = true;
+        if (!audioContext) setupAudioAnalyzer();
+        if (audioContext && audioContext.state === 'suspended') audioContext.resume();
         bgMusic.play().then(() => {
             musicToggle.textContent = '🎵';
             musicToggle.classList.add('playing');

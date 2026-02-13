@@ -47,6 +47,7 @@
       z-index: 10;
       mask-image: linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%);
       -webkit-mask-image: linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%);
+      touch-action: none;
     }
 
     .gallery-container:active {
@@ -94,6 +95,9 @@
       height: 100%;
       object-fit: cover;
       filter: sepia(0.2) contrast(0.95) brightness(1.05);
+      pointer-events: none;
+      -webkit-user-drag: none;
+      user-select: none;
     }
 
     /* ===== CENTRAL BUTTON ===== */
@@ -741,6 +745,38 @@
     const nextArrow = document.getElementById('nextArrow');
 
     // ========================================
+    // DYNAMIC LAYOUT
+    // ========================================
+    
+    function updateButtonPosition() {
+      const button = document.getElementById('memoryButton');
+      let itemHeight = 380; // Default desktop height
+      
+      // Check if mobile logic applies (fallback if no items yet)
+      if (window.innerWidth <= 768) {
+         itemHeight = window.innerWidth * 0.95;
+      }
+      
+      // If items exist, measure actual rendered height (includes rotation)
+      const item = document.querySelector('.gallery-item');
+      if (item) {
+         itemHeight = item.getBoundingClientRect().height;
+      }
+
+      const viewportHeight = window.innerHeight;
+      const galleryBottom = (viewportHeight / 2) + (itemHeight / 2);
+      const spaceAvailable = viewportHeight - galleryBottom;
+      const btnHeight = button.offsetHeight || 47; // approx height
+      
+      let bottomPos = (spaceAvailable - btnHeight) / 2;
+      if (bottomPos < 20) bottomPos = 20;
+      
+      button.style.bottom = `${bottomPos}px`;
+    }
+    
+    window.addEventListener('resize', updateButtonPosition);
+
+    // ========================================
     // INFINITE GALLERY SETUP
     // ========================================
     
@@ -759,6 +795,7 @@
         item.innerHTML = `<img src="${assetPath('assets/gallery/' + imgSrc)}" alt="Gallery Image ${index + 1}" loading="lazy">`;
         galleryTrack.appendChild(item);
       });
+      updateButtonPosition();
     }
 
     // ========================================
@@ -799,6 +836,7 @@
     // ========================================
     
     function handleDragStart(e) {
+      if (e.type === 'mousedown') e.preventDefault();
       isDragging = true;
       galleryVelocity = 0; // Stop any existing motion
       startX = e.type.includes('mouse') ? e.pageX : e.touches[0].pageX;
