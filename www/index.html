@@ -580,6 +580,9 @@
   <!-- ===== FLOATING NOTES ===== -->
   <div id="notes-container"></div>
 
+  <!-- ===== MUSIC VISUALIZER ===== -->
+  <canvas id="visualizer"></canvas>
+
   <!-- ===== INFINITE GALLERY ===== -->
   <div class="gallery-container" id="galleryContainer">
     <div class="gallery-track" id="galleryTrack">
@@ -611,7 +614,7 @@
   </div>
 
   <!-- ===== BACKGROUND AUDIO ===== -->
-  <audio id="bgMusic" loop>
+  <audio id="bgMusic" loop crossorigin="anonymous">
     <!-- REPLACE THIS: Add your romantic ambient music file -->
     <source src="./ambient.flac" type="audio/flac">
   </audio>
@@ -1021,6 +1024,15 @@
     let analyser;
     let dataArray;
     let source;
+    const canvas = document.getElementById('visualizer');
+    const canvasCtx = canvas.getContext('2d');
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = 200;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
 
     function setupAudioAnalyzer() {
       if (audioContext) return;
@@ -1062,6 +1074,17 @@
       const scale = 1 + (average / 255) * 0.5;
       
       document.body.style.setProperty('--beat-scale', scale);
+
+      // Visualizer drawing
+      canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
+      const barWidth = (canvas.width / dataArray.length) * 2.5;
+      let x = 0;
+      for(let i = 0; i < dataArray.length; i++) {
+        const barHeight = (dataArray[i] / 255) * canvas.height * 0.8;
+        canvasCtx.fillStyle = `rgba(200, 162, 200, ${dataArray[i] / 255 * 0.5})`; // Accent color with opacity
+        canvasCtx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
+        x += barWidth + 1;
+      }
     }
     
     function triggerFirstInteraction() {
@@ -1155,7 +1178,7 @@
       document.body.insertBefore(container, gallery);
 
       const shapes = ['♥', '♡', '★', '☆', '•', '∘'];
-      const numShapes = 25;
+      const numShapes = Math.floor(window.innerWidth / 35) + 10;
 
       for (let i = 0; i < numShapes; i++) {
         const wrapper = document.createElement('div');
@@ -1250,20 +1273,21 @@
 
     startButton.addEventListener('click', () => {
       introOverlay.style.opacity = '0';
+      
+      // Start music immediately
+      musicPlaying = true;
+      bgMusic.volume = 0;
+      if (!audioContext) setupAudioAnalyzer();
+      if (audioContext && audioContext.state === 'suspended') audioContext.resume();
+      bgMusic.play().then(() => {
+          musicToggle.textContent = '🎵';
+          musicToggle.classList.add('playing');
+          fadeInMusic(0.3, 2000);
+      }).catch(e => console.log("Audio autoplay prevented", e));
+
       setTimeout(() => {
         introOverlay.style.display = 'none';
         initializeApp(); // Start the main app
-        
-        // Start music
-        musicPlaying = true;
-        if (!audioContext) setupAudioAnalyzer();
-        if (audioContext && audioContext.state === 'suspended') audioContext.resume();
-        bgMusic.play().then(() => {
-            musicToggle.textContent = '🎵';
-            musicToggle.classList.add('playing');
-            fadeInMusic(0.3, 2000);
-        }).catch(e => console.log("Audio autoplay prevented", e));
-        
       }, 1500);
     });
 

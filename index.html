@@ -559,12 +559,33 @@
       background: rgba(74, 74, 74, 0.1);
       letter-spacing: 2px;
     }
+
+    #skip-button {
+      position: absolute;
+      top: 30px;
+      right: 30px;
+      background: transparent;
+      border: none;
+      color: #4a4a4a;
+      font-family: 'Courier New', monospace;
+      font-size: 1rem;
+      cursor: pointer;
+      opacity: 0.5;
+      transition: opacity 0.3s ease;
+      z-index: 10001;
+    }
+
+    #skip-button:hover {
+      opacity: 1;
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
 
   <!-- ===== INTRO OVERLAY ===== -->
   <div id="intro-overlay">
+    <button id="skip-button">Skip</button>
     <div id="intro-text-container" class="intro-text"></div>
     <button id="start-button">Start</button>
   </div>
@@ -1129,7 +1150,7 @@
       document.body.insertBefore(container, gallery);
 
       const shapes = ['♥', '♡', '★', '☆', '•', '∘'];
-      const numShapes = 25;
+      const numShapes = Math.floor(window.innerWidth / 35) + 10;
 
       for (let i = 0; i < numShapes; i++) {
         const wrapper = document.createElement('div');
@@ -1186,6 +1207,8 @@
     const introOverlay = document.getElementById('intro-overlay');
     const introTextContainer = document.getElementById('intro-text-container');
     const startButton = document.getElementById('start-button');
+    const skipButton = document.getElementById('skip-button');
+    let isIntroSkipped = false;
     
     const introSentences = [
       "Crazy to think we've already been together for three years, huh",
@@ -1196,8 +1219,10 @@
     async function playIntro() {
       // Small delay before starting
       await new Promise(r => setTimeout(r, 1000));
+      if (isIntroSkipped) return;
 
       for (const sentence of introSentences) {
+        if (isIntroSkipped) return;
         introTextContainer.textContent = "";
         
         // Disable transition for instant appearance of container for typing effect
@@ -1223,6 +1248,23 @@
     }
 
     startButton.addEventListener('click', () => {
+      introOverlay.style.opacity = '0';
+      setTimeout(() => {
+        introOverlay.style.display = 'none';
+        initializeApp(); // Start the main app
+        
+        // Start music
+        musicPlaying = true;
+        bgMusic.play().then(() => {
+            musicToggle.textContent = '🎵';
+            musicToggle.classList.add('playing');
+            fadeInMusic(0.3, 2000);
+        }).catch(e => console.log("Audio autoplay prevented", e));
+        
+      }, 1500);
+    });
+
+    skipButton.addEventListener('click', () => {
       introOverlay.style.opacity = '0';
       setTimeout(() => {
         introOverlay.style.display = 'none';
