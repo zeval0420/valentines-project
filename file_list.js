@@ -4,11 +4,15 @@ const memoryHazeImages = [
 ];
 
 const galleryImages = [
+   "628067688_1933910690539803_2249110835509134134_n.jpg",
+   "628180934_879676908030310_5078264818278629848_n.jpg",
+   "6fznjUj3.jpg",
    "att.4AXBjCV4J-flbBz6sUlj97FgYg8Bc3GJGKUXpzooYbU.JPG",
    "att.aZvIPxcIkpb241YqRyfbLFHyF88A3Ob5aSNEh2ZQx00.JPG",
    "att.mxR1TUVUeqEHfcE6kuihoA8Je4iDHxdGqNnKgAvZbT8.JPG",
    "att.stY7MUPpXiOJxlEUzRVmAun84rMtPLuhzZbCZ-rcHfE.JPG",
    "att.xozuwy1tNcsiah75sNN0Uf2cojaiTp1eIYr9KvMViSc.JPG",
+   "FeBkymh2.jpg",
    "IMG_0571.jpg",
    "IMG_0577.jpg",
    "IMG_0579.jpg",
@@ -44,6 +48,7 @@ const galleryImages = [
    "IMG_7442.jpg",
    "IMG_9171.JPEG",
    "IMG_9869.jpg",
+   "o_egl2Q7.jpg",
 ];
 
 const polaroidImages = [
@@ -62,5 +67,7 @@ const polaroidImages = [
    "Our first prom together.JPG",
    "Our latest date.jpg",
    "Our second Valentine's.jpg",
+   "Sayang di tulips o lips to lips.jpg",
    "We got to travel abroad, yayy.jpg",
+   "yayy, third Valentines.jpg",
 ];
