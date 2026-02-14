@@ -54,7 +54,7 @@ const polaroidImages = [
    "Di ko na alam.JPG",
    "DIY Photobooth hehe.JPEG",
    "First time going out.jpg",
-   "Happy Chirstmas.JPG",
+   "Happy Christmas.JPG",
    "Kinda ran together.JPG",
    "Maybe we get married one day, but who knows.JPG",
    "My first kiss to you....jpg",
